@@ -5,7 +5,7 @@ import session from './session'
  
 let $login = $(`
     <form class="login-form">
-      <h2>Login</h2>
+      <h2>Log In</h2>
       <input id="username" 
         type="text" 
         name="username" 
@@ -30,7 +30,12 @@ $login.find('input[type="submit"]')
       password: password
     }, {
       success: function(model, response) {
+        console.log('model:', model, 
+          'response:', response );
         model.unset('password');
+        console.log( response._kmd.authtoken );
+        window.localStorage.setItem('authtoken', 
+          response._kmd.authtoken)
         router.navigate( 'contacts', {trigger:true});
       },
       error: function() {

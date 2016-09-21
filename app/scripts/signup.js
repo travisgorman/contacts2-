@@ -4,7 +4,7 @@ import router from './router'
 import session from './session'
  
 let $signup = $(`
-    <form class="login-form">
+    <form class="signup-form">
       <h2>Sign Up</h2>
       <input id="username" 
         type="text" 
@@ -19,7 +19,7 @@ let $signup = $(`
         value="submit">
     </form>
 `);
-
+console.log( session );
 $signup.find('input[type="submit"]')
   .on('click', function(e) {
     e.preventDefault();

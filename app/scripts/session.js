@@ -2,8 +2,7 @@ import Backbone from 'backbone';
 import settings from './settings';
 
 const Session = Backbone.Model.extend({
-  urlRoot: `https://baas.kinvey.com/user/
-    ${settings.appKey}/login`,
+  urlRoot: `https://baas.kinvey.com/user/${settings.appKey}/login`,
   defaults: {
     username: '',
     authtoken: ''  

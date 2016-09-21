@@ -1,3 +1,8 @@
-
+.showSession {
+  width: 60px;
+  height: 60px;
+  background: #609EE9; }
+  .showSession:hover {
+    background: #4D8BD9; }
 
 /*# sourceMappingURL=main.css.map */
