@@ -1,46 +1,69 @@
 import $ from 'jquery'
-import settings from './settings'
-import router from './router'
-import session from './session'
- 
-let $login = $(`
-    <form class="login-form">
-      <h2>Log In</h2>
-      <input id="username" 
-        type="text" 
-        name="username" 
-        placeholder="username"/>
-      <input id="password" 
-        type="password" 
-        name="password" 
-        placeholder="password"/>
-      <input type="submit" 
-        name="submit" 
-        value="submit">
-    </form>
-`);
+import Backbone from 'backbone'
+import signup from './signup'
+import user from '../models/user'
+import router from '../router'
+import settings from '../settings'
 
-$login.find('input[type="submit"]')
-  .on('click', function(e) {
-    e.preventDefault();
-    let username = $login.find('#username').val();
-    let password = $login.find('#password').val();
-    session.save({
-      username: username, 
-      password: password
-    }, {
-      success: function(model, response) {
-        console.log('model:', model, 
-          'response:', response );
-        model.unset('password');
-        console.log( response._kmd.authtoken );
-        window.localStorage.setItem('authtoken', 
-          response._kmd.authtoken)
-        router.navigate( 'contacts', {trigger:true});
+function renderLogin() {
+  let login = $(`
+    <div class="loginPage">
+      <h1>Personal Contact List</h1>
+      <h2>Log In</h2>
+    <input id = "usernameLogIn"
+      type="textarea" 
+        placeholder="username" 
+        value="">
+    <input id = "passwordLogIn" 
+        type="password" 
+        placeholder="password" 
+        value="">
+    <input id = "loginButton" 
+        type="button" 
+        name="button" 
+        value="Log-In">
+      <p>Not a member yet?</p>
+    <input id = "routeToSignupButton" 
+        type="button" 
+        name="button" 
+        value="Sign-Up">
+    </div>
+`);
+    login.find('#routeToSignupButton')
+      .on('click', function(e) {
+        e.preventDefault();
+        router.navigate('signup', {
+          trigger: true
+      });
+    });
+    login.find('#loginButton')
+      .on('click', function(e) {
+      e.preventDefault();
+      let username = login.find('#username').val();
+      let password = login.find('#password').val();
+      let encrypted = btoa(settings.appKey + ':' + settings.appSecret);
+    $.ajax({
+      type: 'POST',
+      url: `http://baas.kinvey.com/user/${settings.appKey}/#login`,
+      data: JSON.stringify({
+        username: username,
+        password: password
+      }),
+      headers: {
+        Authorization: `Basic ${encrypted}`
+      },
+      contentType: 'application/json',
+      success: function(response) {
+        user.username = username;
+        user.authtoken = response._kmd.authtoken;
+        router.navigate('contacts', {trigger:true})
+        console.log('you logged in')
       },
       error: function() {
-        console.log( 'ERROR' );
+        console.log( 'error' )
       }
     });
-});
-export default $login;
+  });
+  return login;
+}
+export default renderLogin;
